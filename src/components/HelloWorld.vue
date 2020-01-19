@@ -20,7 +20,6 @@ export default {
       .get('https://localhost:44367/api/FlashCard')
             .then(response => {
               this.$store.commit("loadFlashcards", response.data)
-            .catch(error => console.log(error))
         })
   },
 }

@@ -26,6 +26,9 @@ export default {
   },
   mounted(){
     this.flashcards = this.$store.state.flashcards
+    if (this.flashcards.length == 0){
+      alert("Could not load the data. Try to run a server.")
+    }
     this.question = this.flashcards[this.currentQuestion]["question"]
     this.anserw = this.flashcards[this.currentQuestion]["answer"]
   },
