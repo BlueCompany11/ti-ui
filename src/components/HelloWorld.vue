@@ -1,43 +1,28 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    <div>{{question}}: {{anserw}}</div>
-    <button v-on:click="loadData">Load data</button>
-    <button v-on:click="sendData">Send data</button>
+    <div id="nav">
+      <button class="big-btn"><router-link to="/learn">Learn</router-link></button>
+    </div>
+    <div>
+      <button class="big-btn"><router-link to="/create">Create flashcard</router-link></button>
+    </div>
+    <router-view/>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+
 export default {
   name: 'HelloWorld',
-  props: {
-  msg: String,
-  },
-  data: function(){
-    return {
-      question: String,
-      anserw: String,
-    }
-  },
   mounted(){
     axios
       .get('https://localhost:44367/api/FlashCard')
             .then(response => {
-              this.msg = response.data
+              this.$store.commit("loadFlashcards", response.data)
+            .catch(error => console.log(error))
         })
   },
-  methods: {
-    loadData: function (){
-      axios
-      .get('https://localhost:44367/api/FlashCard')
-      .then(response => {
-        this.question = response.data[0]["question"]
-        this.anserw = response.data[0]["anserw"]
-        })
-      .catch(error => console.log(error))
-    }
-  }
 }
 </script>
 
@@ -56,5 +41,10 @@ li {
 }
 a {
   color: #42b983;
+}
+
+.big-btn {
+    width: 100px;
+    height: 50px;
 }
 </style>

@@ -2,43 +2,49 @@
   <div class="hello">
     <div>
         <span v-text="question"></span>
+        <p>Anserw: </p>
+        <span v-if="submitted" v-text="anserw"></span>
     </div>
-    <p>Anserw: </p>
-    <p v-if="submitted">{{anserw}}>>
-    <button v-on:click="checkAnserw">Check</button>
+    <button v-if="!submitted" v-on:click="checkAnserw" v-text="msg"></button>
+    <button v-if="submitted" v-on:click="goNext" v-text="msg"></button>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+
 export default {
   name: 'HelloWorld',
-  props: {
-    flashcards: Object,
-  },
   data: function(){
     return {
-      question: String,
-      anserw: String,
-      submitted: Boolean,
+      question: "",
+      anserw: "",
+      submitted: false,
+      flashcards: [],
+      currentQuestion: 0,
+      msg: "Check"
     }
   },
   mounted(){
-    axios
-      .get('https://localhost:44367/api/FlashCard')
-            .then(response => {
-              this.msg = response.data
-        })
+    this.flashcards = this.$store.state.flashcards
+    this.question = this.flashcards[this.currentQuestion]["question"]
+    this.anserw = this.flashcards[this.currentQuestion]["answer"]
   },
   methods: {
     checkAnserw: function (){
-      axios
-      .get('https://localhost:44367/api/FlashCard')
-      .then(response => {
-        this.question = response.data[0]["question"]
-        this.anserw = response.data[0]["anserw"]
-        })
-      .catch(error => console.log(error))
+      this.submitted = true;
+      this.msg = "Next"
+    },
+    goNext: function(){
+      this.currentQuestion += 1
+      if(this.currentQuestion >= this.flashcards.length){
+          this.msg = "Finished"
+      }
+      else{
+          this.submitted = false;
+          this.question = this.flashcards[this.currentQuestion]["question"]
+          this.anserw = this.flashcards[this.currentQuestion]["answer"]
+      }
+
     }
   }
 }
